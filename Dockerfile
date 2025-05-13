@@ -8,7 +8,7 @@ RUN apk update && apk add --no-cache gcc libffi-dev musl-dev
 WORKDIR /app
 
 # Copy the current project files into the container
-COPY . /app
+COPY . .
 
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
