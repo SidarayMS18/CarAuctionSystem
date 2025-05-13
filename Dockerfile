@@ -1,20 +1,16 @@
-# Start from a secure, minimal Python base image
-FROM python:3.9-alpine
+FROM python:3.9-slim
 
-# Install necessary dependencies
-RUN apk update && apk add --no-cache gcc libffi-dev musl-dev
-
-# Set the working directory inside the container
+# Create and set the working directory
 WORKDIR /app
 
-# Copy the current project files into the container
+# Copy all project files into the container's /app directory
 COPY . .
 
-# Install Python dependencies
+# Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port (e.g., Flask runs on port 5000)
+# Expose the port Flask runs on
 EXPOSE 5000
 
-# Run the app (adjust as necessary for your project)
+# Start the app
 CMD ["python", "app.py"]
