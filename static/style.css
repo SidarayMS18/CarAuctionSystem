@@ -1,1 +1,393 @@
 
+body {
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    background: #f5f6fa;
+    color: #23272f;
+    min-height: 100vh;
+}
+
+header {
+    background: linear-gradient(90deg, #1a2238 70%, #283655 100%);
+    padding: 24px 0 18px 0;
+    text-align: left;
+    color: #fff;
+    box-shadow: 0 4px 24px rgba(30,40,60,0.08);
+    position: relative;
+}
+
+.header-content {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 2.2em;
+    font-weight: 700;
+    letter-spacing: 2px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo i {
+    font-size: 1.2em;
+    color: #ffd700;
+}
+
+.header-actions {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+}
+
+.dark-mode-btn, #logoutBtn {
+    padding: 10px 22px;
+    background: #ffd700;
+    color: #1a2238;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 1.1em;
+    border: none;
+    font-weight: 600;
+    transition: background 0.3s, color 0.3s;
+    box-shadow: 0 2px 8px rgba(30,40,60,0.04);
+}
+
+.dark-mode-btn:hover, #logoutBtn:hover {
+    background: #23272f;
+    color: #ffd700;
+}
+
+#logoutBtn {
+    display: none;
+}
+
+.container {
+    width: 95%;
+    max-width: 1200px;
+    margin: 32px auto 0 auto;
+}
+
+.overview {
+    background: linear-gradient(135deg, #23272f 70%, #283655 100%);
+    padding: 48px 32px;
+    margin-top: 30px;
+    border-radius: 18px;
+    box-shadow: 0 6px 32px rgba(30,40,60,0.10);
+    color: #fff;
+    text-align: center;
+}
+
+.overview h2, .overview h3 {
+    font-family: 'Bebas Neue', cursive, sans-serif;
+    letter-spacing: 2px;
+    font-weight: 400;
+    text-transform: uppercase;
+}
+
+.overview p, .overview ul li {
+    font-size: 1.25em;
+    margin-bottom: 10px;
+}
+
+.overview ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 28px;
+}
+
+.overview button {
+    padding: 16px 36px;
+    background: #ffd700;
+    color: #1a2238;
+    border: none;
+    border-radius: 32px;
+    font-size: 1.3em;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(30,40,60,0.06);
+    transition: background 0.3s, color 0.3s;
+}
+
+.overview button:hover {
+    background: #23272f;
+    color: #ffd700;
+}
+
+.login-form {
+    background: #fff;
+    padding: 36px 28px;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(30,40,60,0.10);
+    max-width: 400px;
+    margin: 32px auto;
+    text-align: center;
+}
+
+.login-form input {
+    padding: 14px;
+    margin: 12px 0;
+    width: 100%;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1.1em;
+    background: #f9f9f9;
+    transition: border 0.2s;
+}
+
+.login-form input:focus {
+    border: 2px solid #ffd700;
+    outline: none;
+}
+
+.login-form button {
+    padding: 14px 0;
+    background: linear-gradient(90deg, #ffd700 60%, #ffb300 100%);
+    color: #23272f;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.2em;
+    font-weight: 600;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 10px;
+    transition: background 0.3s, color 0.3s;
+}
+
+.login-form button:hover {
+    background: #23272f;
+    color: #ffd700;
+}
+
+#mainContent {
+    display: none;
+}
+
+.car {
+    background: #fff;
+    margin-bottom: 32px;
+    border-radius: 18px;
+    box-shadow: 0 4px 24px rgba(30,40,60,0.10);
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.car:hover {
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 0 8px 32px rgba(40,54,85,0.13);
+}
+
+.car img {
+    width: 170px;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(30,40,60,0.08);
+    border: 3px solid #ffd70033;
+    background: #fff;
+}
+
+.car-details {
+    flex-grow: 1;
+    margin-left: 32px;
+    min-width: 0;
+}
+
+.car-details h2 {
+    font-size: 2em;
+    margin: 0 0 8px 0;
+    color: #1a2238;
+    font-weight: 700;
+}
+
+.car-details p {
+    margin: 6px 0;
+    font-size: 1.1em;
+}
+
+.timer {
+    font-weight: 600;
+    color: #283655;
+}
+
+.bid-section {
+    min-width: 220px;
+    text-align: right;
+}
+
+.bid-section label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    display: block;
+}
+
+.bid-section input {
+    padding: 10px;
+    width: 120px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1.1em;
+    margin-bottom: 8px;
+    background: #f9f9f9;
+    transition: border 0.2s;
+}
+
+.bid-section input:focus {
+    border: 2px solid #ffd700;
+    outline: none;
+}
+
+.bid-section button {
+    padding: 10px 24px;
+    background: linear-gradient(90deg, #ffd700 60%, #ffb300 100%);
+    color: #23272f;
+    border: none;
+    border-radius: 30px;
+    font-size: 1.1em;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 6px;
+    transition: background 0.3s, color 0.3s;
+}
+
+.bid-section button:hover {
+    background: #23272f;
+    color: #ffd700;
+}
+
+.balance-section {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(30,40,60,0.06);
+    padding: 18px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    justify-content: space-between;
+}
+
+.balance-section h3 {
+    margin: 0;
+    font-size: 1.3em;
+    color: #1a2238;
+    font-weight: 700;
+}
+
+.balance-section input[type="number"] {
+    width: 120px;
+    margin-right: 8px;
+}
+
+.sort-bar {
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sort-bar label {
+    font-weight: 600;
+}
+
+.bid-history-section {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(30,40,60,0.06);
+    padding: 18px 24px;
+    margin-top: 32px;
+}
+
+.bid-history-section h3 {
+    margin-top: 0;
+    color: #1a2238;
+    font-weight: 700;
+}
+
+.bid-history-section ul {
+    padding-left: 18px;
+    font-size: 1.1em;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+    .car {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .car img {
+        width: 100%;
+        margin-bottom: 18px;
+    }
+
+    .car-details {
+        margin-left: 0;
+        margin-bottom: 18px;
+    }
+
+    .bid-section {
+        text-align: left;
+        min-width: 0;
+    }
+}
+
+/* Dark Mode Styles */
+body.dark-mode {
+    background: #181818;
+    color: #eee;
+}
+
+body.dark-mode header {
+    background: #23272f;
+}
+
+body.dark-mode .dark-mode-btn,
+body.dark-mode #logoutBtn {
+    background: #23272f;
+    color: #ffd700;
+    border: 1px solid #ffd700;
+}
+
+body.dark-mode .dark-mode-btn:hover,
+body.dark-mode #logoutBtn:hover {
+    background: #ffd700;
+    color: #23272f;
+}
+
+body.dark-mode .overview,
+body.dark-mode .login-form,
+body.dark-mode .car,
+body.dark-mode .balance-section,
+body.dark-mode .bid-history-section {
+    background: #23272f;
+    color: #ffd700;
+}
+
+body.dark-mode input,
+body.dark-mode select {
+    background-color: #444;
+    color: #ffd700;
+    border-color: #ffd700;
+}
+
+body.dark-mode .overview button,
+body.dark-mode .login-form button,
+body.dark-mode .bid-section button {
+    background: #ffd700;
+    color: #23272f;
+}
+
+body.dark-mode .overview button:hover,
+body.dark-mode .login-form button:hover,
+body.dark-mode .bid-section button:hover {
+    background: #23272f;
+    color: #ffd700;
+}
