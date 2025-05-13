@@ -1,1 +1,318 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vintage Car Auction</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <span class="logo"><i class="fa-solid fa-car-side"></i> Vintage Car Auction</span>
+            <div class="header-actions">
+                <button class="dark-mode-btn" onclick="toggleDarkMode()"><i class="fa-solid fa-moon"></i> Dark Mode</button>
+                {% if logged_in %}
+                <button id="logoutBtn" onclick="logout()"><i class="fa-solid fa-right-from-bracket"></i> Logout</button>
+                {% endif %}
+            </div>
+        </div>
+    </header>
 
+    <div class="container">
+        {% if not logged_in %}
+        <div id="overviewPage" class="overview">
+            <h2>Auction Guidelines</h2>
+            <ul>
+                <li><strong>Account Setup:</strong> Create or log in to your account to participate.</li>
+                <li><strong>Add Funds:</strong> Ensure your account has sufficient balance before placing bids.</li>
+                <li><strong>Bidding Process:</strong> Place your bids in real-time. Each car will have a live countdown timer.</li>
+                <li><strong>Winning Criteria:</strong> The highest valid bid when the timer expires secures the vehicle.</li>
+                <li><strong>Fair Play:</strong> All bids are final. No bid retractions are allowed once submitted.</li>
+            </ul>
+            <h3>How to Get Started</h3>
+            <ul>
+                <li>Register or Log In</li>
+                <li>Browse Vintage Cars</li>
+                <li>Add Funds to Your Wallet</li>
+                <li>Join the Auction and Start Bidding</li>
+            </ul>
+            <h3>Ready to Join the Action?</h3>
+            <button onclick="showLoginPage()" style="background: #ffd700; color: #1a2238;">Login and Start Bidding</button>
+        </div>
+
+        <div id="loginForm" class="login-form" style="display:none;">
+            <h2>Customer Login</h2>
+            <input type="text" id="username" placeholder="Username">
+            <input type="password" id="password" placeholder="Password">
+            <button onclick="login()">Login</button>
+            <p>Don't have an account? <a href="#" onclick="showSignupPage()" style="color: cornflowerblue;">Sign up</a></p>
+        </div>
+
+        <div id="signupForm" class="login-form" style="display:none;">
+            <h2>Create Account</h2>
+            <input type="text" id="signupUsername" placeholder="Username">
+            <input type="password" id="signupPassword" placeholder="Password">
+            <button onclick="signup()">Sign Up</button>
+            <p>Already have an account? <a href="#" onclick="showLoginPage()" style="color: cornflowerblue;">Login</a></p>
+        </div>
+        {% else %}
+        <div id="mainContent">
+            <div class="balance-section">
+                <h3>Welcome, <span id="userDisplay">{{ username }}</span></h3>
+                <p>Balance: ₹<span id="balance">{{ balance }}</span></p>
+                <input type="number" id="funds" placeholder="Add funds" min="1">
+                <button onclick="addFunds()">Add Funds</button>
+            </div>
+
+            <div class="sort-bar">
+                <label for="sort">Sort Cars By:</label>
+                <select id="sort" onchange="sortCars()">
+                    <option value="name">Name</option>
+                    <option value="price">Current Bid</option>
+                </select>
+            </div>
+
+            <div id="carsContainer">
+                {% for car in cars %}
+                <div class="car">
+                    <img src="{{ car['image_url'] }}" alt="{{ car['name'] }}">
+                    <div class="car-details">
+                        <h2>{{ car['name'] }}</h2>
+                        <p>Location: {{ car['location'] }}</p>
+                        <p>Current Bid: ₹<span id="currentBid-{{ car['id'] }}">{{ car['current_bid'] }}</span></p>
+                        <p class="timer">Auction Ends In: <span id="timer-{{ car['id'] }}">{{ format_time(car['end_time']) }}</span></p>
+                        <p id="endMsg-{{ car['id'] }}" style="color: green;"></p>
+                    </div>
+                    <div class="bid-section">
+                        <label>Your Bid: ₹</label>
+                        <input type="number" id="bid-{{ car['id'] }}" min="{{ car['current_bid'] + 1 }}" value="{{ car['current_bid'] + 1 }}">
+                        <button onclick="placeBid({{ car['id'] }})">Place Bid</button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="bid-history-section">
+                <h3>Your Bid History</h3>
+                <ul id="bidHistory">
+                    {% for bid in bids %}
+                    <li>{{ bid['name'] }}: ₹{{ bid['amount'] }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function showLoginPage() {
+            document.getElementById("overviewPage").style.display = "none";
+            document.getElementById("loginForm").style.display = "block";
+            document.getElementById("signupForm").style.display = "none";
+        }
+
+        function showSignupPage() {
+            document.getElementById("overviewPage").style.display = "none";
+            document.getElementById("loginForm").style.display = "none";
+            document.getElementById("signupForm").style.display = "block";
+        }
+
+        function login() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            fetch("/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw err; });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                } else {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert(error.message || "An error occurred. Please try again.");
+            });
+        }
+
+        function signup() {
+            const username = document.getElementById("signupUsername").value;
+            const password = document.getElementById("signupPassword").value;
+
+            fetch("/signup", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `username=${encodeURIComponent(username)}&password=${encodeURIComponent(password)}`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw err; });
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message);
+                if (data.success) {
+                    showLoginPage();
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert(error.message || "An error occurred. Please try again.");
+            });
+        }
+
+        function logout() {
+            fetch("/logout")
+            .then(() => {
+                window.location.href = "/";
+            });
+        }
+
+        function addFunds() {
+            const amount = parseInt(document.getElementById("funds").value);
+            if (isNaN(amount) || amount <= 0) {
+                alert("Please enter a valid amount");
+                return;
+            }
+
+            fetch("/add_funds", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `amount=${amount}`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw err; });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("balance").textContent = data.new_balance;
+                    document.getElementById("funds").value = "";
+                    alert("Funds added successfully!");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert(error.message || "An error occurred. Please try again.");
+            });
+        }
+
+        function placeBid(carId) {
+            const amount = parseInt(document.getElementById(`bid-${carId}`).value);
+            if (isNaN(amount)) {
+                alert("Please enter a valid bid amount");
+                return;
+            }
+
+            fetch("/place_bid", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: `car_id=${carId}&amount=${amount}`
+            })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(err => { throw err; });
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    document.getElementById("balance").textContent = data.new_balance;
+                    document.getElementById(`currentBid-${carId}`).textContent = amount;
+                    
+                    // Update bid history
+                    const bidHistory = document.getElementById("bidHistory");
+                    bidHistory.innerHTML = "";
+                    data.bids.forEach(bid => {
+                        const li = document.createElement("li");
+                        li.textContent = `${bid.name}: ₹${bid.amount}`;
+                        bidHistory.appendChild(li);
+                    });
+                    
+                    alert("Bid placed successfully!");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert(error.message || "An error occurred. Please try again.");
+            });
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle("dark-mode");
+        }
+
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const sec = seconds % 60;
+            return `${minutes.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        }
+
+        // Update timers every second
+        setInterval(() => {
+            {% if logged_in and cars %}
+                {% for car in cars %}
+                    const timerElement = document.getElementById("timer-{{ car['id'] }}");
+                    if (timerElement) {
+                        const currentTime = timerElement.textContent.split(":");
+                        let totalSeconds = parseInt(currentTime[0]) * 60 + parseInt(currentTime[1]);
+                        if (totalSeconds > 0) {
+                            totalSeconds--;
+                            timerElement.textContent = formatTime(totalSeconds);
+                        } else {
+                            document.getElementById(`endMsg-{{ car['id'] }}`).textContent = 
+                                `Auction Ended. Highest Bid: ₹{{ car['current_bid'] }}`;
+                        }
+                    }
+                {% endfor %}
+            {% endif %}
+        }, 1000);
+
+        function sortCars() {
+            const sortValue = document.getElementById("sort").value;
+            const container = document.getElementById("carsContainer");
+            const cars = Array.from(container.children);
+            
+            cars.sort((a, b) => {
+                if (sortValue === "name") {
+                    const nameA = a.querySelector("h2").textContent.toLowerCase();
+                    const nameB = b.querySelector("h2").textContent.toLowerCase();
+                    return nameA.localeCompare(nameB);
+                } else {
+                    const bidA = parseInt(a.querySelector(".bid-section input").min);
+                    const bidB = parseInt(b.querySelector(".bid-section input").min);
+                    return bidB - bidA;
+                }
+            });
+            
+            // Re-append sorted cars
+            cars.forEach(car => container.appendChild(car));
+        }
+    </script>
+</body>
+</html>
