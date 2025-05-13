@@ -24,9 +24,9 @@ jobs:
 
       - name: Build Docker Image
         run: |
-          docker build -t yourusername/car-auction .
+          docker build -t sidaray17/vintage-car-auction .
 
       - name: Push Docker Image to Docker Hub
         run: |
-          docker push yourusername/car-auction:latest
+          docker push sidaray17/vintage-car-auction:latest
 
